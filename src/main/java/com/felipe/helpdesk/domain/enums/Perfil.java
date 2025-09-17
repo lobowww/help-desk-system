@@ -26,6 +26,7 @@ public enum Perfil {
 		return descricao;
 	}
 	
+	// Método que recebe o número(código) e retorna o perfil -> Recebe 1 - Retorno: Perfil.CLIENTE
 	public static Perfil toEnum(Integer cod) {
 		if(cod == null) {
 			return null;
