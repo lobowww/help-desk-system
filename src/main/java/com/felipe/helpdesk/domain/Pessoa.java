@@ -1,20 +1,39 @@
 package com.felipe.helpdesk.domain;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.felipe.helpdesk.domain.enums.Perfil;
 
-public abstract class Pessoa {
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+
+@Entity
+public abstract class Pessoa implements Serializable {
+	private static final long serialVersionUID = 1L;
 	
+	@Id
 	protected Integer id;
 	protected String nome;
+	
+	@Column(unique = true)
 	protected String cpf;
+	
+	@Column(unique = true)
 	protected String email;
 	protected String senha;
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "PERFIS")
 	protected Set<Integer> perfis = new HashSet<>();
 	// Lista de perfis - Tipo Set<Perfil>
 	// Inicia com new HashSet<>(), pois evitamos a questão de exceção de ponteiro nulo
@@ -23,6 +42,8 @@ public abstract class Pessoa {
 	// Aqui temos uma questão que será alterada, quando formos no perfil ele é composto por (índice, descricao), não quero fazer uma lista com todas essas informações
 	// Logo vou ter que substituir protected Set<Perfil> perfis = new HashSet<>(); por Set<Integer> perfis = new HashSet<>(); afim de pegar somente o índice.
 	// Porém essa simples alteração resultará em erros pelo meu código no qual terei que ajustar.
+	
+	@JsonFormat(pattern = "dd/MM/yyyy")
 	protected LocalDate dataCriacao = LocalDate.now();
 	
 	// Uma lógica interessante a ser implementada no momento de criação de um objeto Pessoa será ele começar tendo um Perfil de cliente logo instancio nos construtores
